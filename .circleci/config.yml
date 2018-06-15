@@ -27,7 +27,7 @@ jobs:
 
       - run: 
          name: Build all versions
-         command: gox -output "/tmp/envwrite_{{.OS}}_{{.Arch}}"
+         command: gox -output "/tmp/tfsutil_{{.OS}}_{{.Arch}}"
 
       # Indicate we have artifacts
       - store_artifacts:
