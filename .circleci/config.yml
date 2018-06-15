@@ -17,9 +17,13 @@ jobs:
          name: Install the Github release creator tool
          command: go get github.com/tcnksm/ghr
 
-      - run: 
-         name: Fetch and Install packages
-         command: go get -d -v ./...
+      - run:
+         name: Get windows specific dependencies
+         command: env GOOS=windows go get -d -v $PACKAGE_PATH/...
+
+      - run:
+         name: Get other dependencies
+         command: go get -t -d -v $PACKAGE_PATH/...
 
       - run: 
          name: Build all versions
