@@ -19,11 +19,11 @@ jobs:
 
       - run:
          name: Get windows specific dependencies
-         command: env GOOS=windows go get -d -v $PACKAGE_PATH/...
+         command: env GOOS=windows go get -d -v ./...
 
       - run:
          name: Get other dependencies
-         command: go get -t -d -v $PACKAGE_PATH/...
+         command: go get -t -d -v ./...
 
       - run: 
          name: Build all versions
