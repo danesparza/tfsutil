@@ -47,7 +47,7 @@ func vglist(cmd *cobra.Command, args []string) {
 
 	//	List all the items:
 	for _, group := range retval.Value {
-		fmt.Println(group.Name)
+		fmt.Printf("%s (%v)\n", group.Name, len(group.Variables))
 	}
 
 }

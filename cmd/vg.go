@@ -25,10 +25,10 @@ func init() {
 type VariableGroupsResponse struct {
 	Count int `json:"count"`
 	Value []struct {
-		// Variables []map[string]Variable `json:"variables"`
-		ID   int    `json:"id"`
-		Type string `json:"type"`
-		Name string `json:"name"`
+		Variables map[string]Variable `json:"variables"`
+		ID        int                 `json:"id"`
+		Type      string              `json:"type"`
+		Name      string              `json:"name"`
 
 		CreatedBy struct {
 			DisplayName string `json:"displayName"`
