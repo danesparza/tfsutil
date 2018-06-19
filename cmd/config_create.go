@@ -6,26 +6,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var yamlDefault = []byte(`tfsurl: http://YOURSERVER:8080/tfs/YOURCOLLECTION/YOURPROJECT/_apis
+pat: YOUR_PERSONAL_ACCESS_TOKEN
+`)
+
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Renders a config file",
 	Long:  `Outputs a config file with default values.  Write this to a file called 'tfsutil.yml' and customize the values.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
+		fmt.Printf("%s", yamlDefault)
 	},
 }
 
 func init() {
 	configCmd.AddCommand(createCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// createCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// createCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -1,7 +1,13 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+
+	"github.com/spf13/viper"
+
+	"github.com/danesparza/tfsutil/tfs"
 
 	"github.com/spf13/cobra"
 )
@@ -11,21 +17,41 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List variable groups",
 	Long:  `Lists variable groups`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
-	},
+	Run:   vglist,
+}
+
+func vglist(cmd *cobra.Command, args []string) {
+
+	fullurl := fmt.Sprintf("%s/%s", viper.GetString("tfsurl"), "distributedtask/variablegroups?groupName=*&actionFilter=use&top=50&api-version=4.1-preview.1")
+
+	//	Request a list of variable groups
+	resp, err := tfs.GetAPIResponse(fullurl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	//	If the HTTP status code indicates an error, report it and get out
+	if resp.StatusCode >= 400 {
+		log.Fatalln("[ERROR] There was an error getting information from TFS")
+	}
+
+	//	Decode the return object
+	retval := VariableGroupsResponse{}
+	err = json.NewDecoder(resp.Body).Decode(&retval)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("\nGroups found: %v\n================\n", retval.Count)
+
+	//	List all the items:
+	for _, group := range retval.Value {
+		fmt.Println(group.Name)
+	}
+
 }
 
 func init() {
 	vgCmd.AddCommand(listCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// listCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

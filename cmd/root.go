@@ -25,9 +25,9 @@ var rootCmd = &cobra.Command{
 	Long: `A set of command line utilities to make your
 life a little easier when working with Team Foundation Server.  
 
-NOTE: tfsutil the TFS API and it requires credentials.  
-To set the credentials used with each command, pass them in 
-using flags or create a config file.`,
+NOTE: tfsutil uses the TFS API and it requires credentials.  
+To set the personal access token (PAT) credentials used with 
+each command, pass them in using flags or create a config file.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -99,17 +99,17 @@ func initConfig() {
 
 	//	If we have a config file, report it:
 	if viper.ConfigFileUsed() != "" {
-		log.Println("[INFO] Using config file:", viper.ConfigFileUsed())
+		log.Println("[DEBUG] Using config file:", viper.ConfigFileUsed())
 	}
 
 	//	If we have  tfs url or a PAT set, indicate it:
 	if viper.GetString("tfsurl") != "" {
-		log.Printf("[INFO] Using TFS url: \n%s\n", viper.GetString("tfsurl"))
+		log.Printf("[DEBUG] Using TFS url: \n%s\n", viper.GetString("tfsurl"))
 	}
 
 	if viper.GetString("pat") != "" {
 		pat := viper.GetString("pat")
-		log.Printf("[INFO] Using PAT that starts with: '%s'", pat[:4])
+		log.Printf("[DEBUG] Using PAT that starts with: '%s'", pat[:4])
 	}
 
 }

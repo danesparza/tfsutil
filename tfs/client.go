@@ -10,6 +10,8 @@ import (
 
 // GetAPIResponse gets an API response for the given url request
 func GetAPIResponse(url string) (*http.Response, error) {
+	log.Println("[DEBUG] Creating a request for ", url)
+
 	//	Create our http client
 	client := &http.Client{
 		CheckRedirect: redirectPolicyFunc,
@@ -22,6 +24,7 @@ func GetAPIResponse(url string) (*http.Response, error) {
 	}
 
 	//	Set our basic auth field:
+	log.Println("[DEBUG] Using PAT ", viper.GetString("pat"))
 	req.Header.Add("Authorization", "Basic "+basicAuth("", viper.GetString("pat")))
 
 	//	Execute our request:
