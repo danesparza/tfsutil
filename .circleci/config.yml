@@ -26,14 +26,16 @@ jobs:
          command: go get -t -d -v ./...
 
       - run: 
-         name: Build all versions
+         name: Build all artifacts
          command: gox -output "/tmp/artifacts/{{.OS}}_{{.Arch}}/tfsutil"
 
       - run:
-         name: Compress all binaries
-         command: for i in /tmp/artifacts/*/; do zip -r "${i%/}.zip" "$i"; done
+         name: Compress all artifacts
+         command: cd /tmp/artifacts;for i in */; do zip -r "${i%/}.zip" "$i"; done
       
-
+      - run:
+         name: Delete temporary artifact directories
+         command: rm -rf /tmp/artifacts/*/
 
       # Indicate we have artifacts
       - store_artifacts:
