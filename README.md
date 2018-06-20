@@ -1,5 +1,5 @@
 # tfsutil [![CircleCI](https://circleci.com/gh/danesparza/tfsutil.svg?style=shield)](https://circleci.com/gh/danesparza/tfsutil)
-Utilities for working with TFS (Team Foundation Server)
+Utilities for working with [TFS (Team Foundation Server)](https://docs.microsoft.com/en-us/vsts/user-guide/?view=tfs-2018)
 
 ## Getting started
 - Grab the [latest release](https://github.com/danesparza/tfsutil/releases/latest) and unzip `tfsutil` to a location in your path.
