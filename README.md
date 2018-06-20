@@ -1,4 +1,4 @@
-# tfsutil
+# tfsutil [![CircleCI](https://circleci.com/gh/danesparza/tfsutil.svg?style=shield)](https://circleci.com/gh/danesparza/tfsutil)
 Utilities for working with TFS (Team Foundation Server)
 
 ## Getting started
