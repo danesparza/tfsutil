@@ -81,7 +81,7 @@ func initConfig() {
 	//	Set our defaults
 	viper.SetDefault("tfsurl", "")
 	viper.SetDefault("pat", "")
-	viper.SetDefault("LogLevel", "INFO")
+	viper.SetDefault("loglevel", "WARN")
 
 	// If a config file is found, read it in
 	// otherwise, make note that there was a problem
@@ -92,7 +92,7 @@ func initConfig() {
 	//	Set the log level from config (if we have it)
 	filter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel(viper.GetString("LogLevel")),
+		MinLevel: logutils.LogLevel(viper.GetString("loglevel")),
 		Writer:   os.Stderr,
 	}
 	log.SetOutput(filter)

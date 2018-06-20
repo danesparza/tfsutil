@@ -30,10 +30,15 @@ type VariableGroupsResponse struct {
 
 // VariableGroup is a single variable group
 type VariableGroup struct {
+	// Variables is the map of variables associated with this VariableGroup
 	Variables map[string]Variable `json:"variables"`
 	ID        int                 `json:"id,omitempty"`
-	Type      string              `json:"type,omitempty"`
-	Name      string              `json:"name"`
+
+	// Type is the variable group type.  By default this should be 'Vsts'
+	Type string `json:"type"`
+
+	// Name is the name of the variable group
+	Name string `json:"name"`
 
 	CreatedBy struct {
 		DisplayName string `json:"displayName"`
@@ -63,8 +68,10 @@ type VariableGroup struct {
 		ImageURL   string `json:"imageUrl"`
 	} `json:"modifiedBy,omitempty"`
 
-	ModifiedOn  time.Time `json:"modifiedOn,omitempty"`
-	Description string    `json:"description"`
+	ModifiedOn time.Time `json:"modifiedOn,omitempty"`
+
+	// Description is the description for this variable group
+	Description string `json:"description"`
 }
 
 // Variable defines a single variable in a variable group
