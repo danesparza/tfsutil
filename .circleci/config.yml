@@ -31,7 +31,7 @@ jobs:
 
       - run:
          name: Compress all binaries
-         command: for i in /tmp/*/; do zip -r "/tmp/${i%/}.zip" "$i"; done
+         command: for i in /tmp/*/; do zip -r "${i%/}.zip" "$i"; done
       
 
 
