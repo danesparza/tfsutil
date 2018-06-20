@@ -27,17 +27,17 @@ jobs:
 
       - run: 
          name: Build all versions
-         command: gox -output "/tmp/{{.OS}}_{{.Arch}}/tfsutil"
+         command: gox -output "/tmp/artifacts/{{.OS}}_{{.Arch}}/tfsutil"
 
       - run:
          name: Compress all binaries
-         command: for i in /tmp/*/; do zip -r "${i%/}.zip" "$i"; done
+         command: for i in /tmp/artifacts/*/; do zip -r "${i%/}.zip" "$i"; done
       
 
 
       # Indicate we have artifacts
       - store_artifacts:
-          path: /tmp
+          path: /tmp/artifacts
 
       # Create a release
       - run: 
