@@ -6,7 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var yamlDefault = []byte(`tfsurl: http://YOURSERVER:8080/tfs/YOURCOLLECTION/YOURPROJECT/_apis
+var yamlDefault = []byte(`# Default config
+tfsurl: http://YOURSERVER:8080/tfs/YOURCOLLECTION/YOURPROJECT/_apis
 pat: YOUR_PERSONAL_ACCESS_TOKEN
 `)
 

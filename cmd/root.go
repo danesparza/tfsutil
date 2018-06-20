@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/hashicorp/logutils"
 	homedir "github.com/mitchellh/go-homedir"
@@ -28,6 +29,20 @@ life a little easier when working with Team Foundation Server.
 NOTE: tfsutil uses the TFS API and it requires credentials.  
 To set the personal access token (PAT) credentials used with 
 each command, pass them in using flags or create a config file.`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+
+		//	Verify that we have a tfsurl and a pat
+		if strings.TrimSpace(viper.GetString("tfsurl")) == "" {
+			fmt.Printf("\nThis tool requires a TFS base url to operate.   \n\nPlease specify one on the command line or in the config file 'tfsutil.yml' \nFor help creating a config file, see the command 'tfsutil config create'\n")
+			os.Exit(1)
+		}
+
+		if strings.TrimSpace(viper.GetString("pat")) == "" {
+			fmt.Printf("\nThis tool requires a TFS Personal Access Token (pat) for authentication.  \n\nPlease specify a pat on the command line or in the config file 'tfsutil.yml' \nFor help creating a config file, see the command 'tfsutil config create'\n")
+			os.Exit(1)
+		}
+
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -111,5 +126,4 @@ func initConfig() {
 		pat := viper.GetString("pat")
 		log.Printf("[DEBUG] Using PAT that starts with: '%s'", pat[:4])
 	}
-
 }
