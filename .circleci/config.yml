@@ -27,7 +27,7 @@ jobs:
 
       - run: 
          name: Build all artifacts
-         command: gox -output "/tmp/artifacts/{{.OS}}_{{.Arch}}/tfsutil"
+         command: gox -output "/tmp/artifacts/tfsutil_{{.OS}}_{{.Arch}}/tfsutil"
 
       - run:
          name: Compress all artifacts
