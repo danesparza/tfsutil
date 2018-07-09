@@ -25,6 +25,10 @@ jobs:
          name: Get other dependencies
          command: go get -t -d -v ./...
 
+      - run:
+         name: Run tests
+         command: go test -v -race ./...
+
       - run: 
          name: Build all artifacts
          command: gox -output "/tmp/artifacts/tfsutil_{{.OS}}_{{.Arch}}/tfsutil"
