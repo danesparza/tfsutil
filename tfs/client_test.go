@@ -6,51 +6,61 @@ import (
 	"github.com/danesparza/tfsutil/tfs"
 )
 
-//	Arrange our test table
-var urltests = []struct {
-	url        string
+type testparams struct {
 	collection string
 	project    string
 	expected   string
-}{
-	{"http://tfsrepository.mydomain.com:8080/tfs/", "", "", "http://tfsrepository.mydomain.com:8080/tfs/defcol/defproj/_apis"},
-	{"http://tfsrepository.mydomain.com:8080/tfs/", "colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-	{"http://tfsrepository.mydomain.com:8080/tfs", "colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-	{"http://tfsrepository.mydomain.com:8080/tfs/", "col-one", "proj-one", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
-	{"http://simpleintranet:8080", "col-one", "proj-one", "http://simpleintranet:8080/col-one/proj-one/_apis"},
 }
 
-// We should be able to get a formatted url back
+//	Our test data struct
+type testdata struct {
+	baseurl        string
+	defaultcol     string
+	defaultproject string
+	params         []testparams
+}
+
+// If we use valid defaults, We should be able to get a formatted url back
 func TestClient_ValidDefaults_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing.T) {
 
 	//	Arrange
+	urltests := testdata{
+		baseurl:        "http://tfsrepository.mydomain.com:8080/tfs",
+		defaultcol:     "DefaultCollection",
+		defaultproject: "",
+		params: []testparams{
+			{"", "", "http://tfsrepository.mydomain.com:8080/tfs/DefaultCollection/_apis"},
+			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"col-one", "proj-one", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
+		},
+	}
+
 	client := tfs.Client{
-		TfsURL:            "defaulturl",
-		DefaultCollection: "defcol",
-		DefaultProject:    "defproj",
+		TfsURL:            urltests.baseurl,
+		DefaultCollection: urltests.defaultcol,
+		DefaultProject:    urltests.defaultproject,
 	}
 
 	//	Act
-	for _, tt := range urltests {
-		//	Set the base url on the client:
-		client.TfsURL = tt.url
+	for _, tt := range urltests.params {
 
 		//	Call the method with the test parameters
 		actual, err := client.GetFormattedBaseURL(tt.collection, tt.project)
 		if err != nil {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, tt.url, tt.expected, err)
+			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
 		}
 
 		//	Compare expected with actual and report an error if they don't match
 		if tt.expected != actual {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, tt.url, tt.expected, actual)
+			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
 		}
 	}
 
 }
 
-// If we use bad defaults and don't pass args, it should throw an error
-func TestClient_BadDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
+// If we use blank defaults and don't pass args, it should throw an error
+func TestClient_BlankDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
 
 	//	Arrange
 	client := tfs.Client{
@@ -59,8 +69,11 @@ func TestClient_BadDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
 		DefaultProject:    "",
 	}
 
+	collection := ""
+	project := ""
+
 	//	Act
-	_, err := client.GetFormattedBaseURL("", "")
+	_, err := client.GetFormattedBaseURL(collection, project)
 
 	//	Assert
 	if err == nil {
@@ -69,30 +82,40 @@ func TestClient_BadDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
 
 }
 
-// If we use bad defaults but have valid args, it should return a formatted url
-func TestClient_BadDefaultsValidArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
+// If we use blank defaults but have valid args, it should return a formatted url
+func TestClient_BlankDefaultsValidArgs_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing.T) {
 
 	//	Arrange
-	client := tfs.Client{
-		TfsURL:            "http://tfsrepository.mydomain.com:8080/tfs",
-		DefaultCollection: "",
-		DefaultProject:    "",
+	urltests := testdata{
+		baseurl:        "http://tfsrepository.mydomain.com:8080/tfs",
+		defaultcol:     "",
+		defaultproject: "",
+		params: []testparams{
+			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"col-one", "proj-one", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
+		},
 	}
 
-	collection := "awesomecol"
-	project := "awesomeproj"
-	expected := "http://tfsrepository.mydomain.com:8080/tfs/awesomecol/awesomeproj/_apis"
+	client := tfs.Client{
+		TfsURL:            urltests.baseurl,
+		DefaultCollection: urltests.defaultcol,
+		DefaultProject:    urltests.defaultproject,
+	}
 
 	//	Act
-	actual, err := client.GetFormattedBaseURL(collection, project)
+	for _, tt := range urltests.params {
 
-	//	Assert
-	if err != nil {
-		t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", collection, project, client.TfsURL, expected, err)
-	}
+		//	Call the method with the test parameters
+		actual, err := client.GetFormattedBaseURL(tt.collection, tt.project)
+		if err != nil {
+			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
+		}
 
-	if expected != actual {
-		t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", collection, project, client.TfsURL, expected, actual)
+		//	Compare expected with actual and report an error if they don't match
+		if tt.expected != actual {
+			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
+		}
 	}
 
 }

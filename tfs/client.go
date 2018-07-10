@@ -33,12 +33,8 @@ func (client Client) GetFormattedBaseURL(collection, project string) (string, er
 		urlproj = project
 	}
 
-	//	If urlcol or urlproj is blank, we have a problem.  Return an error:
+	//	If urlcol is blank, we have a problem.  Return an error:
 	if urlcol == "" {
-		return "", errors.New("TFS project isn't specified, but is required")
-	}
-
-	if urlproj == "" {
 		return "", errors.New("TFS collection isn't specified, but is required")
 	}
 
