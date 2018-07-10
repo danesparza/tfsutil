@@ -19,8 +19,8 @@ type Client struct {
 	DefaultProject    string
 }
 
-// GetFormattedBaseURL gets the formatted TFS base url to use
-func (client Client) GetFormattedBaseURL(collection, project string) (string, error) {
+// GetFormattedURL gets the formatted TFS url to use
+func (client Client) GetFormattedURL(collection, project, area, resource string) (string, error) {
 
 	//	If the collection or project are not blank, use them.  Otherwise, use defaults
 	urlcol := client.DefaultCollection
@@ -45,7 +45,7 @@ func (client Client) GetFormattedBaseURL(collection, project string) (string, er
 	}
 
 	//	Assemble the component parts
-	u.Path = path.Join(u.Path, urlcol, urlproj, "_apis")
+	u.Path = path.Join(u.Path, urlcol, urlproj, "_apis", area, resource)
 
 	//	Return the full url
 	return u.String(), nil

@@ -9,6 +9,8 @@ import (
 type testparams struct {
 	collection string
 	project    string
+	area       string
+	resource   string
 	expected   string
 }
 
@@ -21,7 +23,7 @@ type testdata struct {
 }
 
 // If we use valid defaults, We should be able to get a formatted url back
-func TestClient_ValidDefaults_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing.T) {
+func TestClient_ValidDefaults_GetFormattedURL_ReturnsFormattedUrl(t *testing.T) {
 
 	//	Arrange
 	urltests := testdata{
@@ -29,10 +31,10 @@ func TestClient_ValidDefaults_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing
 		defaultcol:     "DefaultCollection",
 		defaultproject: "",
 		params: []testparams{
-			{"", "", "http://tfsrepository.mydomain.com:8080/tfs/DefaultCollection/_apis"},
-			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-			{"col-one", "proj-one", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
+			{"", "", "", "", "http://tfsrepository.mydomain.com:8080/tfs/DefaultCollection/_apis"},
+			{"colone", "projone", "", "", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"colone", "projone", "", "", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"col-one", "proj-one", "", "", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
 		},
 	}
 
@@ -46,21 +48,21 @@ func TestClient_ValidDefaults_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing
 	for _, tt := range urltests.params {
 
 		//	Call the method with the test parameters
-		actual, err := client.GetFormattedBaseURL(tt.collection, tt.project)
+		actual, err := client.GetFormattedURL(tt.collection, tt.project, "", "")
 		if err != nil {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
+			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
 		}
 
 		//	Compare expected with actual and report an error if they don't match
 		if tt.expected != actual {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
+			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
 		}
 	}
 
 }
 
 // If we use blank defaults and don't pass args, it should throw an error
-func TestClient_BlankDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T) {
+func TestClient_BlankDefaultsNoArgs_GetFormattedURL_ThowsError(t *testing.T) {
 
 	//	Arrange
 	client := tfs.Client{
@@ -73,17 +75,17 @@ func TestClient_BlankDefaultsNoArgs_GetFormattedBaseURL_ThowsError(t *testing.T)
 	project := ""
 
 	//	Act
-	_, err := client.GetFormattedBaseURL(collection, project)
+	_, err := client.GetFormattedURL(collection, project, "", "")
 
 	//	Assert
 	if err == nil {
-		t.Errorf("GetFormattedBaseUrl with no defaults and no parameters should throw an error, but didn't")
+		t.Errorf("GetFormattedURL with no defaults and no parameters should throw an error, but didn't")
 	}
 
 }
 
 // If we use blank defaults but have valid args, it should return a formatted url
-func TestClient_BlankDefaultsValidArgs_GetFormattedBaseURL_ReturnsFormattedUrl(t *testing.T) {
+func TestClient_BlankDefaultsValidArgs_GetFormattedURL_ReturnsFormattedUrl(t *testing.T) {
 
 	//	Arrange
 	urltests := testdata{
@@ -107,14 +109,14 @@ func TestClient_BlankDefaultsValidArgs_GetFormattedBaseURL_ReturnsFormattedUrl(t
 	for _, tt := range urltests.params {
 
 		//	Call the method with the test parameters
-		actual, err := client.GetFormattedBaseURL(tt.collection, tt.project)
+		actual, err := client.GetFormattedURL(tt.collection, tt.project, "", "")
 		if err != nil {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
+			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
 		}
 
 		//	Compare expected with actual and report an error if they don't match
 		if tt.expected != actual {
-			t.Errorf("GetFormattedBaseUrl('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
+			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got %s", tt.collection, tt.project, urltests.baseurl, tt.expected, actual)
 		}
 	}
 
