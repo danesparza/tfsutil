@@ -48,7 +48,7 @@ func TestClient_ValidDefaults_GetFormattedURL_ReturnsFormattedUrl(t *testing.T) 
 	for _, tt := range urltests.params {
 
 		//	Call the method with the test parameters
-		actual, err := client.GetFormattedURL(tt.collection, tt.project, "", "")
+		actual, err := client.GetFormattedURL(tt.collection, tt.project, tt.area, tt.resource)
 		if err != nil {
 			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
 		}
@@ -93,9 +93,9 @@ func TestClient_BlankDefaultsValidArgs_GetFormattedURL_ReturnsFormattedUrl(t *te
 		defaultcol:     "",
 		defaultproject: "",
 		params: []testparams{
-			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-			{"colone", "projone", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
-			{"col-one", "proj-one", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
+			{"colone", "projone", "", "", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"colone", "projone", "", "", "http://tfsrepository.mydomain.com:8080/tfs/colone/projone/_apis"},
+			{"col-one", "proj-one", "", "", "http://tfsrepository.mydomain.com:8080/tfs/col-one/proj-one/_apis"},
 		},
 	}
 
@@ -109,7 +109,7 @@ func TestClient_BlankDefaultsValidArgs_GetFormattedURL_ReturnsFormattedUrl(t *te
 	for _, tt := range urltests.params {
 
 		//	Call the method with the test parameters
-		actual, err := client.GetFormattedURL(tt.collection, tt.project, "", "")
+		actual, err := client.GetFormattedURL(tt.collection, tt.project, tt.area, tt.resource)
 		if err != nil {
 			t.Errorf("GetFormattedURL('%s', '%s') with base url: %s expected: %s but got error %s", tt.collection, tt.project, urltests.baseurl, tt.expected, err)
 		}
