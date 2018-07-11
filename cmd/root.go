@@ -51,13 +51,13 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/tfsutil.yml)")
 
 	rootCmd.PersistentFlags().StringVarP(&project, "project", "p", "", "TFS project")
-	rootCmd.PersistentFlags().StringVarP(&tfsurl, "tfsurl", "u", "", "TFS root url")
+	rootCmd.PersistentFlags().StringVarP(&tfsurl, "url", "u", "", "TFS root url")
 	rootCmd.PersistentFlags().StringVarP(&personalaccesstoken, "pat", "t", "", "Personal access token (available in TFS)")
 	rootCmd.PersistentFlags().StringVarP(&collection, "collection", "c", "DefaultCollection", "TFS collection")
 	rootCmd.PersistentFlags().StringVarP(&loglevel, "loglevel", "l", "WARN", "Log level: DEBUG/INFO/WARN/ERROR")
 
 	//	Bind config flags for optional config file override:
-	viper.BindPFlag("tfsurl", rootCmd.PersistentFlags().Lookup("tfsurl"))
+	viper.BindPFlag("url", rootCmd.PersistentFlags().Lookup("url"))
 	viper.BindPFlag("pat", rootCmd.PersistentFlags().Lookup("pat"))
 	viper.BindPFlag("collection", rootCmd.PersistentFlags().Lookup("collection"))
 	viper.BindPFlag("project", rootCmd.PersistentFlags().Lookup("project"))
