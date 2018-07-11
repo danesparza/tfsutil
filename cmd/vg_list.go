@@ -1,14 +1,13 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
+	"sort"
 
 	"github.com/spf13/viper"
 
 	"github.com/danesparza/tfsutil/tfs"
-
 	"github.com/spf13/cobra"
 )
 
@@ -22,29 +21,19 @@ var listCmd = &cobra.Command{
 
 func vglist(cmd *cobra.Command, args []string) {
 
-	fullurl := fmt.Sprintf("%s/%s", viper.GetString("tfsurl"), "distributedtask/variablegroups?groupName=*&actionFilter=use&top=50&api-version=4.1-preview.1")
+	//	Create a client with our base TFS url
+	client := tfs.Client{
+		TfsURL: viper.GetString("tfsurl"),
+	}
 
-	//	Request a list of variable groups
-	resp, err := tfs.GetAPIResponse(fullurl)
+	//	Get the list of Variable groups.  Report any errors
+	retval, err := client.GetListOfVariableGroups(viper.GetString("collection"), viper.GetString("project"))
 	if err != nil {
-		log.Fatal(err)
-	}
-	defer resp.Body.Close()
-
-	//	If the HTTP status code indicates an error, report it and get out
-	if resp.StatusCode >= 400 {
-		log.Fatalln("[ERROR] There was an error getting information from TFS")
+		log.Fatalln("[ERROR] Variable group list \n", err)
 	}
 
-	//	Decode the return object
-	retval := VariableGroupsResponse{}
-	err = json.NewDecoder(resp.Body).Decode(&retval)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Closure(s) that order the VariableGroup structure.
-	name := func(p1, p2 *VariableGroup) bool {
+	// Closure(s) that orders the VariableGroup structure.
+	name := func(p1, p2 *tfs.VariableGroup) bool {
 		return p1.Name < p2.Name
 	}
 
@@ -63,4 +52,37 @@ func vglist(cmd *cobra.Command, args []string) {
 
 func init() {
 	vgCmd.AddCommand(listCmd)
+}
+
+// By is the type of a "less" function that defines the ordering of its VariableGroup arguments.
+type By func(p1, p2 *tfs.VariableGroup) bool
+
+// Sort is a method on the function type, By, that sorts the argument slice according to the function.
+func (by By) Sort(groups []tfs.VariableGroup) {
+	ps := &vgSorter{
+		groups: groups,
+		by:     by, // The Sort method's receiver is the function (closure) that defines the sort order.
+	}
+	sort.Sort(ps)
+}
+
+// vgSorter joins a By function and a slice of VariableGroups to be sorted.
+type vgSorter struct {
+	groups []tfs.VariableGroup
+	by     func(p1, p2 *tfs.VariableGroup) bool // Closure used in the Less method.
+}
+
+// Len is part of sort.Interface.
+func (s *vgSorter) Len() int {
+	return len(s.groups)
+}
+
+// Swap is part of sort.Interface.
+func (s *vgSorter) Swap(i, j int) {
+	s.groups[i], s.groups[j] = s.groups[j], s.groups[i]
+}
+
+// Less is part of sort.Interface. It is implemented by calling the "by" closure in the sorter.
+func (s *vgSorter) Less(i, j int) bool {
+	return s.by(&s.groups[i], &s.groups[j])
 }

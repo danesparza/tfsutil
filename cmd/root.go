@@ -16,6 +16,9 @@ var (
 	ProblemWithConfigFile bool
 	tfsurl                string
 	personalaccesstoken   string
+	collection            string
+	project               string
+	loglevel              string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -45,15 +48,20 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/tfsutil.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/tfsutil.yml)")
 
-	//	Setup our flags
+	rootCmd.PersistentFlags().StringVarP(&project, "project", "p", "", "TFS project")
 	rootCmd.PersistentFlags().StringVarP(&tfsurl, "tfsurl", "u", "", "TFS root url")
-	rootCmd.PersistentFlags().StringVarP(&personalaccesstoken, "pat", "p", "", "Personal access token (available in TFS)")
+	rootCmd.PersistentFlags().StringVarP(&personalaccesstoken, "pat", "t", "", "Personal access token (available in TFS)")
+	rootCmd.PersistentFlags().StringVarP(&collection, "collection", "c", "DefaultCollection", "TFS collection")
+	rootCmd.PersistentFlags().StringVarP(&loglevel, "loglevel", "l", "WARN", "Log level: DEBUG/INFO/WARN/ERROR")
 
 	//	Bind config flags for optional config file override:
 	viper.BindPFlag("tfsurl", rootCmd.PersistentFlags().Lookup("tfsurl"))
 	viper.BindPFlag("pat", rootCmd.PersistentFlags().Lookup("pat"))
+	viper.BindPFlag("collection", rootCmd.PersistentFlags().Lookup("collection"))
+	viper.BindPFlag("project", rootCmd.PersistentFlags().Lookup("project"))
+	viper.BindPFlag("loglevel", rootCmd.PersistentFlags().Lookup("loglevel"))
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -81,6 +89,8 @@ func initConfig() {
 	//	Set our defaults
 	viper.SetDefault("tfsurl", "")
 	viper.SetDefault("pat", "")
+	viper.SetDefault("collection", "")
+	viper.SetDefault("project", "")
 	viper.SetDefault("loglevel", "WARN")
 
 	// If a config file is found, read it in
@@ -110,5 +120,14 @@ func initConfig() {
 	if viper.GetString("pat") != "" {
 		pat := viper.GetString("pat")
 		log.Printf("[DEBUG] Using PAT that starts with: '%s'", pat[:4])
+	}
+
+	//	If we have  tfs collection or project set, indicate it:
+	if viper.GetString("collection") != "" {
+		log.Printf("[DEBUG] Using TFS collection: %s\n", viper.GetString("collection"))
+	}
+
+	if viper.GetString("project") != "" {
+		log.Printf("[DEBUG] Using TFS project: %s\n", viper.GetString("project"))
 	}
 }
