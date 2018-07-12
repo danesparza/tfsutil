@@ -24,3 +24,12 @@ tfsutil vg copy "Special unicorn variables"
 ```
 
 Where 'Special unicorn variables' is the name of the variable group you want to copy.  Note:  The variable group name should be surrounded with quotes.
+
+### Listing projects
+To list projects, execute the command: 
+
+```
+tfsutil project list
+```
+
+All projects for the current collection will be listed
