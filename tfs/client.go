@@ -51,6 +51,43 @@ func (client Client) GetFormattedURL(collection, project, area, resource, query 
 	return u.String(), nil
 }
 
+// GetListOfProjects gets a list of projects for the given collection
+func (client Client) GetListOfProjects(collection string) (ProjectResponse, error) {
+
+	//	Our return value:
+	retval := ProjectResponse{}
+
+	//	Format the url
+	fullurl, err := client.GetFormattedURL(collection, "", "", "projects", "")
+	if err != nil {
+		apperr := fmt.Errorf("Unable to format url: %s", err)
+		return retval, apperr
+	}
+
+	//	Make a GET reqeust to TFS
+	resp, err := getAPIResponse(fullurl)
+	if err != nil {
+		apperr := fmt.Errorf("There was a problem calling TFS: %s", err)
+		return retval, apperr
+	}
+	defer resp.Body.Close()
+
+	//	If the HTTP status code indicates an error, report it and get out
+	if resp.StatusCode >= 400 {
+		apperr := fmt.Errorf("There was an error getting information from TFS: %s", resp.Status)
+		return retval, apperr
+	}
+
+	//	Decode the return object
+	err = json.NewDecoder(resp.Body).Decode(&retval)
+	if err != nil {
+		apperr := fmt.Errorf("There was a problem decoding the response from TFS: %s", err)
+		return retval, apperr
+	}
+
+	return retval, nil
+}
+
 // GetListOfVariableGroups gets a list of variable groups for the given collection and project
 func (client Client) GetListOfVariableGroups(collection, project string) (VariableGroupsResponse, error) {
 

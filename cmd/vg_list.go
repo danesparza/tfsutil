@@ -38,10 +38,12 @@ func vglist(cmd *cobra.Command, args []string) {
 	}
 
 	//	Sort the variable groups
-	By(name).Sort(retval.VariableGroups)
+	VGBy(name).Sort(retval.VariableGroups)
 
 	//	Begin the report:
-	fmt.Printf("\nGroups found: %v\n================\n", retval.Count)
+	fmt.Printf("\nCollection: %v", viper.GetString("collection"))
+	fmt.Printf("\nProject: %v\n", viper.GetString("project"))
+	fmt.Printf("\nVariable groups found: %v\n==========================\n", retval.Count)
 
 	//	List all the groups (and their variable counts):
 	for _, group := range retval.VariableGroups {
@@ -54,11 +56,11 @@ func init() {
 	vgCmd.AddCommand(listCmd)
 }
 
-// By is the type of a "less" function that defines the ordering of its VariableGroup arguments.
-type By func(p1, p2 *tfs.VariableGroup) bool
+// VGBy is the type of a "less" function that defines the ordering of its VariableGroup arguments.
+type VGBy func(p1, p2 *tfs.VariableGroup) bool
 
 // Sort is a method on the function type, By, that sorts the argument slice according to the function.
-func (by By) Sort(groups []tfs.VariableGroup) {
+func (by VGBy) Sort(groups []tfs.VariableGroup) {
 	ps := &vgSorter{
 		groups: groups,
 		by:     by, // The Sort method's receiver is the function (closure) that defines the sort order.
